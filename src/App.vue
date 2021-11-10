@@ -160,10 +160,10 @@ export default {
     getSity (name, index) {
       if (name) this.city = name
       localStorage.clear()
-      fetch(`http://api.openweathermap.org/data/2.5/weather?q=${this.city},RU&appid=7a41ab91e4650db93a715fa7e390e998	`)
+      fetch(`http://api.openweathermap.org/data/2.5/weather?q=${this.city},RU&appid=7a41ab91e4650db93a715fa7e390e998`)
         .then(res => res.json())
         .then(res => {
-          if (res.cod == '404') {
+          if (res.cod === '404') {
             this.notFound = true
             return
           }
@@ -203,8 +203,8 @@ export default {
     },
 
     clear () {
-      this.notFound = false,
-      this.dublicate = false,
+      this.notFound = false
+      this.dublicate = false
       this.city = ''
     }
   },
