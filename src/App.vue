@@ -160,7 +160,7 @@ export default {
     getSity (name, index) {
       if (name) this.city = name
       localStorage.clear()
-      fetch(`http://api.openweathermap.org/data/2.5/weather?q=${this.city},RU&appid=7a41ab91e4650db93a715fa7e390e998`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.city},RU&appid=7a41ab91e4650db93a715fa7e390e998`)
         .then(res => res.json())
         .then(res => {
           if (res.cod === '404') {
