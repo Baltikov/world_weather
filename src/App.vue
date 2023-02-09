@@ -60,10 +60,16 @@
         </div>
       </div>
 
-      <div class="all-city">
+      <div
+        class="all-city"
+      >
         <div v-for="(item, index) in weather"
           :key="index"
           :value="item"
+          draggable="true"
+          @dragstart="startDrag($event, item, index)"
+          @dragover.prevent
+          @drop="onDrop(index)"
         >
           <div v-if="item.name"
             class="main-city">
@@ -130,6 +136,7 @@ export default {
   data () {
     return {
       weather: [],
+      dragging: -1,
       searh: false,
       city: '',
       requestDone: false,
@@ -206,6 +213,18 @@ export default {
       this.notFound = false
       this.dublicate = false
       this.city = ''
+    },
+    startDrag (event, item, index) {
+      event.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.effectAlLwoed = 'move'
+      event.dataTransfer.setData('itemID', item.id)
+      this.dragging = index
+    },
+    onDrop (to) {
+      this.moveItem(this.dragging, to)
+    },
+    moveItem (from, to) {
+      this.weather.splice(to, 0, this.weather.splice(from, 1)[0])
     }
   },
 
@@ -282,6 +301,7 @@ export default {
 
 .all-city {
   height: auto;
+  min-height: 394px;
   display: flex;
   flex-wrap: wrap;
   margin-top: 193px;
