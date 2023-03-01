@@ -3,7 +3,6 @@
     <div class="container">
 
       <div class="weather__header">World Weather</div>
-
       <div class="weather__location">Watch weather in your current location</div>
 
       <button class="weather__add" >
@@ -76,9 +75,9 @@
             <div class=" main-city__info main-city__info_bold ">
               {{item.name}}
             </div>
-            <div v-if="item.sys.country =='RU'"
+            <div
               class="main-city__info main-city__info_pb">
-              Russia
+               {{item.sys.country}}
             </div>
             <div class="main-city__container main-city__container_bb">
               <div class="main-city__info">
@@ -122,6 +121,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -136,6 +136,9 @@ export default {
   data () {
     return {
       weather: [],
+      curentCity: {},
+      latitude: null,
+      longitude: null,
       dragging: -1,
       searh: false,
       city: '',
@@ -167,7 +170,7 @@ export default {
     getSity (name, index) {
       if (name) this.city = name
       localStorage.clear()
-      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.city},RU&appid=7a41ab91e4650db93a715fa7e390e998`)
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.city},&appid=7a41ab91e4650db93a715fa7e390e998`)
         .then(res => res.json())
         .then(res => {
           if (res.cod === '404') {
@@ -225,6 +228,30 @@ export default {
     },
     moveItem (from, to) {
       this.weather.splice(to, 0, this.weather.splice(from, 1)[0])
+    },
+    // async successCallback (position) {
+    //   console.log(position)
+    //   const { latitude, longitude } = position.coords
+    //   this.latitude = latitude
+    //   this.longitude = longitude
+    // },
+    cerrorCallback (error) {
+      console.log(error)
+    },
+    getLocation () {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=7a41ab91e4650db93a715fa7e390e998`)
+          .then(res => res.json())
+          .then(res => {
+            console.log('curent', this.weather)
+            console.log('new', res)
+            // this.weather = this.weather.concat(res)
+            this.weather.unshift(res)
+            console.log('curent', this.weather)
+          })
+      }, this.errorCallback)
     }
   },
 
@@ -242,6 +269,9 @@ export default {
       this.weather = weather
       this.requestDone = true
     }
+  },
+  mounted () {
+    this.getLocation()
   },
 
   beforeDestroy () {
