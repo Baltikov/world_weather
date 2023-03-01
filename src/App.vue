@@ -245,11 +245,10 @@ export default {
         await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=7a41ab91e4650db93a715fa7e390e998`)
           .then(res => res.json())
           .then(res => {
-            console.log('curent', this.weather)
-            console.log('new', res)
-            // this.weather = this.weather.concat(res)
-            this.weather.unshift(res)
-            console.log('curent', this.weather)
+            const currentLocation = this.weather.filter(city => {
+              return city.id === res.id
+            })
+            if (!currentLocation) this.weather.unshift(res)
           })
       }, this.errorCallback)
     }
